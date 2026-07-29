@@ -99,14 +99,14 @@
 		</dependency>
 		<dependency>
 			<groupId>com.khush</groupId>
-			<artifactId>ecomm-shared-utils</artifactId>
+			<artifactId>shared-utils</artifactId>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>com.khush</groupId>
-				<artifactId>ecomm-shared-utils</artifactId>
+				<artifactId>shared-utils</artifactId>
 				<version>0.0.1-SNAPSHOT</version>
 			</dependency>
 			<dependency>
