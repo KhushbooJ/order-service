@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: mini-ecomm
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+      ddl-auto: 'create-drop'
+  datasource:
+    url: jdbc:postgresql://localhost:5432/orderdb
+    username: kj
+    password:
+    driver-class-name: org.postgresql.Driver
+
+
+
+
