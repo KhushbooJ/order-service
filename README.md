@@ -1,23 +1,43 @@
-# apps
+# order-service
 
-Deployable Spring Boot microservices. Each service is an independently runnable JAR with its own `pom.xml`.
+Manages orders and user accounts. Part of the [ecomm-monorepo](../../README.md).
 
-## Services
+**Tech stack:** Spring Boot 4.1.0 · Spring Data JPA · PostgreSQL · Redis · Apache Kafka · Spring Security · Resilience4j
 
-### order-service
+## Running
 
-Manages orders and user accounts.
+Spring Boot automatically starts the required Docker containers on startup via `spring-boot-docker-compose`:
 
-**Tech stack:** Spring Boot 4.1.0 · Spring Data JPA · PostgreSQL · Apache Kafka · Spring Security · Resilience4j
+```bash
+cd apps/order-service
+./mvnw spring-boot:run
+```
 
-**API endpoints:**
+This brings up:
+- `order-db` — PostgreSQL 16 on host port `5433`
+- `order-redis` — Redis 7 on host port `6379`
+
+Make sure Docker is running before starting the service.
+
+## Configuration
+
+`src/main/resources/application.yaml`:
+
+| Property | Value |
+|---|---|
+| Datasource URL | `jdbc:postgresql://localhost:5433/orders` |
+| Datasource username | `kj` |
+| Hibernate DDL auto | `update` |
+| Docker Compose file | `apps/order-service/compose.yml` |
+
+## API Endpoints
 
 | Method | Path | Description |
 |---|---|---|
-| `GET` | `/api/users/{username}` | Fetch a user by username |
+| `GET` | `/api/users/{username}` | Fetch a user by username (Redis-cached) |
 | `POST` | `/api/users` | Register a new user |
 
-**Domain model:**
+## Domain Model
 
 | Entity | Table | Notes |
 |---|---|---|
@@ -26,25 +46,18 @@ Manages orders and user accounts.
 | `Product` | `products` | Belongs to a `Category`; `image_urls` stored as a PostgreSQL `text[]` array |
 | `Category` | `categories` | Uses a native PostgreSQL `category_type` enum |
 
-**Configuration** (`src/main/resources/application.properties`):
-- PostgreSQL datasource
-- Kafka bootstrap servers
-- Hibernate DDL auto
+## Caching
 
-**Dependencies:** `shared-utils` (security config, exception handling)
+User details are cached in Redis via `shared-utils` `RedisService`. The cache key is the username and TTL is 10 hours.
 
-### Running
+To inspect cached data:
 
 ```bash
-cd apps/order-service
-./mvnw spring-boot:run
+docker exec -it order-service-order-redis-1 redis-cli
+> KEYS *
+> GET <username>
 ```
 
-Requires PostgreSQL running at `localhost:5432` and the schema from `libs/shared-utils/database/sql/create_tables.sql` applied.
+## Dependencies
 
-## Adding a new service
-
-1. Create a new directory under `apps/`.
-2. Add a `pom.xml` with `spring-boot-starter-parent` as parent.
-3. Register the module in the root `pom.xml` `<modules>` block.
-4. Add `shared-utils` as a dependency to inherit shared security and exception handling.
+- [`shared-utils`](../../libs/shared-utils/README.md) — security config, Redis service, exception handling
