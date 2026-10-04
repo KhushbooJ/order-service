@@ -5,12 +5,20 @@ spring:
     database: POSTGRESQL
     show-sql: true
     hibernate:
-      ddl-auto: 'create-drop'
+      ddl-auto: update
   datasource:
-    url: jdbc:postgresql://localhost:5432/orderdb
+    url: jdbc:postgresql://localhost:5433/orders
     username: kj
-    password:
+    password: kj
     driver-class-name: org.postgresql.Driver
+  docker:
+    compose:
+      file: apps/order-service/compose.yml
+      lifecycle-management: NONE
+      start:
+        command: up
+      stop:
+        command: stop
 
 
 

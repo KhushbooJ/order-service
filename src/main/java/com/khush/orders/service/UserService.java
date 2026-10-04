@@ -24,7 +24,7 @@ public class UserService {
     public UserDto findUserByName(String username) {
         UserDto userDto;
         //check cache first
-        userDto = redisService.get("username", UserDto.class);
+        userDto = redisService.get(username, UserDto.class);
         if(userDto != null) {
             return userDto;
         } else {
@@ -37,7 +37,7 @@ public class UserService {
                     .phoneNumber(user.getPhoneNumber())
                     .build();
             //set user details in cache
-            redisService.set("username", userDto, 36000L);
+            redisService.set(username, userDto, 36000L);
             return userDto;
         }
     }
