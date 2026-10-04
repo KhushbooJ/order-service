@@ -7,9 +7,10 @@ import com.khush.orders.requests.RegisterUserRequest;
 import com.khush.service.RedisService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 
 @Service
@@ -42,19 +43,14 @@ public class UserService {
         }
     }
 
-    public Long registerUser(RegisterUserRequest request) {
-        try {
-            User user = User.builder()
-                    .username(request.getUsername())
-                    .email(request.getEmail())
-                    .phoneNumber(request.getPhoneNumber())
-                    .hashedPassword(passwordEncoder.encode(request.getRawPassword()))
-                    .build();
+    public Long registerUser(RegisterUserRequest request) throws DataIntegrityViolationException, MethodArgumentNotValidException {
+        User user = User.builder()
+                .username(request.getUsername())
+                .email(request.getEmail())
+                .phoneNumber(request.getPhoneNumber())
+                .hashedPassword(passwordEncoder.encode(request.getRawPassword()))
+                .build();
         return userRepository.save(user).getId();
-        } catch (Exception e) {
-            log.error("Unable to register new user :"+e.getMessage());
-            throw e;
-        }
     }
 
 }

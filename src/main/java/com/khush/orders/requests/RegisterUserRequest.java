@@ -1,5 +1,6 @@
 package com.khush.orders.requests;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -14,16 +15,20 @@ import org.hibernate.validator.constraints.UniqueElements;
 public class RegisterUserRequest {
 
     @NotBlank
+    @Valid
     private String username;
 
     @NotBlank
     @Email
+    @Valid
     private String email;
 
     @NotBlank
     @Size(min = 8)
+    @Valid
     private String rawPassword;
 
     @NotBlank
+    @Valid
     private String phoneNumber;
 }
