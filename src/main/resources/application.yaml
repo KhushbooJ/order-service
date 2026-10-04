@@ -1,11 +1,14 @@
 spring:
   application:
     name: mini-ecomm
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:create_tables.sql
+      continue-on-error: true
   jpa:
-    database: POSTGRESQL
-    show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
   datasource:
     url: jdbc:postgresql://localhost:5433/orders
     username: kj
